@@ -23,10 +23,13 @@
   "bugs": {
     "url": "https://github.com/javascript-info/tasks-jsbasic/issues"
   },
+  "browserslist": "> 0.25%, not dead",
   "homepage": "https://github.com/javascript-info/tasks-jsbasic#readme",
   "devDependencies": {
+    "@babel/core": "^7.18.10",
+    "@babel/preset-env": "^7.18.10",
     "babel-eslint": "^10.0.3",
-    "babel-loader": "^8.1.0",
+    "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
     "eslint": "^5.16.0",
     "eslint-plugin-import": "^2.18.2",
@@ -41,8 +44,12 @@
     "karma-jasmine": "^2.0.1",
     "karma-mocha-reporter": "git+https://github.com/javascriptru/karma-mocha-reporter.git",
     "karma-viewport": "^1.0.6",
+    "mini-css-extract-plugin": "^2.6.1",
     "style-loader": "^3.3.1",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1"
   }
 }

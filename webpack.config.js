@@ -1,12 +1,15 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
     context: path.resolve(__dirname, 'src'),
     mode: 'development', 
-    entry: './index.js',
+    entry: {
+        main: ['@babel/polyfill', './index.js'],
+    },
     output: {
-        filename: '[name].[contenthash].js',
+        filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
         clean: true,
     },
@@ -15,28 +18,37 @@ module.exports = {
             '@lib': path.resolve(__dirname, 'src/assets/lib'),
         }
     },
+    plugins: [
+        new HtmlWebpackPlugin({
+          template: './index.html',
+        }),
+        new MiniCssExtractPlugin(),
+    ],
     module: {
         rules: [
           {
             test: /\.css$/i,
-            use: ['style-loader', 'css-loader'],
+            use: [MiniCssExtractPlugin.loader, 'css-loader']
           },
           {
             test: /\.(png|svg|jpg|jpeg|gif)$/i,
             type: 'asset/resource',
-            //use: ['file-loader'],
           },
           {
             test: /\.json$/,
             loader: 'json-loader',
             type: 'javascript/auto'
+          },
+          {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: {
+                loader: "babel-loader",
+                options: {
+                    presets: ['@babel/preset-env']
+                }
+            }
           }
         ],
     },
-    plugins: [
-        new HtmlWebpackPlugin({
-          template: './index.html'
-        }),
-    ],
-    
 }
