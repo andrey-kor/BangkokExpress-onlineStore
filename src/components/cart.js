@@ -1,0 +1,206 @@
+import createElement from '@lib/create-element.js';
+import escapeHtml from '@lib/escape-html.js';
+
+import Modal from './modal.js';
+
+import images from '../assets/lib/importImges.js'
+
+export default class Cart {
+  cartItems = []; // [product: {...}, count: N]
+
+  constructor(cartIcon) {
+    this.cartIcon = cartIcon;
+
+    this.addEventListeners();
+  }
+
+  addProduct(product) {
+    if (!product || product === null) return;
+
+    let cartItem = this.cartItems.find((item) => item.product.name == product.name);
+    
+    if (cartItem) cartItem.count += 1;
+    else {
+      const newProd = {
+        product: product,
+        count: 1
+      };
+      this.cartItems.push(newProd);
+    }
+
+    this.onProductUpdate(cartItem);
+  }
+
+  updateProductCount(productId, amount) {
+    let indexProduct;
+
+    let cartItem = this.cartItems.find( function(item, index) {
+      indexProduct = index;
+      return (item.product.id == productId);
+    });
+
+    cartItem.count += amount;
+    if (cartItem.count == 0) this.cartItems.splice(indexProduct, 1);
+
+    this.onProductUpdate(cartItem);
+  }
+
+  isEmpty() {
+    if (this.cartItems.length) return false;
+    else return true;
+  }
+
+  getTotalCount() {
+    let count = 0;
+
+    for (let prod of this.cartItems) {
+      if (prod.count) count += prod.count;
+    }
+
+    return count;
+  }
+
+  getTotalPrice() {
+    let totalPrice = 0;
+
+    for (let prod of this.cartItems) {
+      let productTotalPrice = prod.count * prod.product.price;
+      if (productTotalPrice) totalPrice += productTotalPrice;
+    }
+
+    return totalPrice;
+  }
+
+  renderProduct(product, count) {
+    return createElement(`
+    <div class="cart-product" data-product-id="${product.id}">
+      <div class="cart-product__img">
+        <img src="${images[product.image]}" alt="product">
+      </div>
+      <div class="cart-product__info">
+        <div class="cart-product__title">${escapeHtml(product.name)}</div>
+        <div class="cart-product__price-wrap">
+          <div class="cart-counter">
+            <button type="button" class="cart-counter__button cart-counter__button_minus">
+              <img src="${images['square-minus-icon.svg']}" alt="minus">
+            </button>
+            <span class="cart-counter__count">${count}</span>
+            <button type="button" class="cart-counter__button cart-counter__button_plus">
+              <img src="${images['square-plus-icon.svg']}" alt="plus">
+            </button>
+          </div>
+          <div class="cart-product__price">€${product.price.toFixed(2)}</div>
+        </div>
+      </div>
+    </div>`);
+  }
+
+  renderOrderForm() {
+    return createElement(`<form class="cart-form">
+      <h5 class="cart-form__title">Delivery</h5>
+      <div class="cart-form__group cart-form__group_row">
+        <input name="name" type="text" class="cart-form__input" placeholder="Name" required value="Santa Claus">
+        <input name="email" type="email" class="cart-form__input" placeholder="Email" required value="john@gmail.com">
+        <input name="tel" type="tel" class="cart-form__input" placeholder="Phone" required value="+1234567">
+      </div>
+      <div class="cart-form__group">
+        <input name="address" type="text" class="cart-form__input" placeholder="Address" required value="North, Lapland, Snow Home">
+      </div>
+      <div class="cart-buttons">
+        <div class="cart-buttons__buttons btn-group">
+          <div class="cart-buttons__info">
+            <span class="cart-buttons__info-text">total</span>
+            <span class="cart-buttons__info-price">€${this.getTotalPrice().toFixed(2)}</span>
+          </div>
+          <button type="submit" class="cart-buttons__button btn-group__button button">order</button>
+        </div>
+      </div>
+    </form>`);
+  }
+
+  renderModal() {
+    let modal = new Modal();
+    this.modal = modal;
+  
+    modal.setTitle('Your order');
+   
+    modal.setBody(createElement(`<div></div>`));
+
+    modal.open();
+
+    for (let card of this.cartItems) {
+      document.querySelector('.modal__body div').append(this.renderProduct(card.product, card.count));
+    }
+    document.querySelector('.modal__body').append(this.renderOrderForm());
+
+    document.querySelector('.modal__body').addEventListener('click', (event) => {
+
+      if (!event.target.closest('.cart-counter__button')) return;
+
+      const targetProductId = event.target.closest('.cart-product').dataset.productId;
+
+      if (event.target.closest('.cart-counter__button_plus')) this.updateProductCount (targetProductId, 1);
+      else if (event.target.closest('.cart-counter__button_minus')) this.updateProductCount (targetProductId, -1);
+
+    });
+
+    document.querySelector('.cart-form').addEventListener('submit', (event) => {
+      this.onSubmit(event);
+    })
+    
+  }
+
+  onProductUpdate(cartItem) {
+    this.cartIcon.update(this);
+
+    if (!document.querySelector('body').classList.contains('is-modal-open')) return;
+    if (this.cartItems.length == 0) {
+      this.modal.close();
+      return;
+    }
+
+    let modalBody = document.querySelector('.modal__body');
+
+    const productId = cartItem.product.id;
+
+    modalBody.querySelector(`[data-product-id="${productId}"] .cart-counter__count`).innerHTML = cartItem.count;
+    modalBody.querySelector(`[data-product-id="${productId}"] .cart-product__price`).innerHTML = 
+    `€${(cartItem.count * cartItem.product.price).toFixed(2)}`;
+    modalBody.querySelector(`.cart-buttons__info-price`).innerHTML = `€${this.getTotalPrice().toFixed(2)}`;
+  }
+
+  onSubmit(event) {
+    event.preventDefault();
+
+    event.target.querySelector('button[type="submit"]').classList.add('is-loading');
+
+    fetch('https://httpbin.org/post', {
+      method: 'POST',
+      body: new FormData(document.querySelector('.cart-form')),
+    })
+    .then (responce => {
+      
+      if (responce.ok) {
+        document.querySelector('.modal__title').innerHTML = 'Success!';
+        this.cartItems = [];
+        
+        let modalBody = document.querySelector('.modal__body');
+        modalBody.innerHTML = '';
+        modalBody.insertAdjacentHTML('beforeend', `
+          <div class="modal__body-inner">
+            <p>
+              Order successful! Your order is being cooked :) <br>
+              We’ll notify you about delivery time shortly.<br>
+              <img src="${images['delivery.gif']}">
+            </p>
+          </div>
+        `)
+      }
+    })
+  };
+
+  addEventListeners() {
+    this.cartIcon.elem.onclick = () => this.renderModal();
+  }
+}
+
