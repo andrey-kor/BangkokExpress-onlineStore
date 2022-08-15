@@ -158,6 +158,10 @@ export default class Cart {
       this.modal.close();
       return;
     }
+    if (cartItem.count === 0) {
+      document.querySelector(`[data-product-id = ${cartItem.product.id}`).remove();
+      return;
+    }
 
     let modalBody = document.querySelector('.modal__body');
 
