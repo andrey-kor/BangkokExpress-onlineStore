@@ -187,6 +187,7 @@ export default class Cart {
       if (responce.ok) {
         document.querySelector('.modal__title').innerHTML = 'Success!';
         this.cartItems = [];
+        this.cartIcon.update(this);
         
         let modalBody = document.querySelector('.modal__body');
         modalBody.innerHTML = '';
