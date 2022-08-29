@@ -16,15 +16,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/javascript-info/tasks-js-dom-interfaces.git"
+    "url": "git+https://github.com/andrey-kor/bangkokexpress-onlinestore.git"
   },
-  "author": "Artsiom Mezin",
+  "author": "Andrey Korneev <andie.kor@yandex.ru>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/javascript-info/tasks-jsbasic/issues"
+    "url": "https://github.com/andrey-kor/bangkokexpress-onlinestore/issues"
   },
   "browserslist": "> 0.25%, not dead",
-  "homepage": "https://github.com/javascript-info/tasks-jsbasic#readme",
+  "homepage": "https://github.com/andrey-kor/bangkokexpress-onlinestore#readme",
   "devDependencies": {
     "@babel/core": "^7.18.10",
     "@babel/preset-env": "^7.18.10",
