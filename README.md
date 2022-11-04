@@ -2,15 +2,12 @@
 ## Базовое описание
 Приложение <a href="http://bangkok.andrey-kor.ru/">интернет-магазина</a>
 
- <iframe align="center"
-        width="560" 
-        height="315" 
-        src="YOUTUBE_LINK" 
-        title="Video about the project" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
- </iframe>
+<a href="http://bangkok.andrey-kor.ru/">
+    <img 
+        src="./readmeSrc/bangkok.gif"
+        alt="Демонстрация работы"
+    />
+</a>
 
 ## Возможности:
 - Фильтрация товаров:
