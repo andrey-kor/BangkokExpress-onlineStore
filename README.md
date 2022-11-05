@@ -1,7 +1,13 @@
 # BANGKOK EXPRESS
 ## Базовое описание
-Приложение <a href="http://bangkok.andrey-kor.ru/">интернет-магазина</a>
+Приложение интернет-магазина написано на чистом JS в рамках учебного курса. Проект собран с Webpack, применён Babel компилятор.
 
+<div id="badges" align="center">
+  <a href="http://bangkok.andrey-kor.ru/">
+    <img src="https://img.shields.io/badge/посмотреть_проект-red?style=flat&logoColor=white" alt="Перейти на сайт" title="bangkok.andrey-kor.ru"/>
+  </a>
+</div>
+<br>
 <a href="http://bangkok.andrey-kor.ru/">
     <img 
         src="./readmeSrc/bangkok.gif"
@@ -32,4 +38,4 @@
 
 ## Автор 
 Код JavaScript: [Андрей Корнеев](https://github.com/andrey-kor) <br>
-Верска [Learn JavaScript](https://learn.javascript.ru/)
+Вёрстка [Learn JavaScript](https://learn.javascript.ru/)
